@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+/* ============================================
+   GaonWale Design System
+   ============================================ */
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Primary Gradient Colors */
+  --color-gw-purple: #7C3AED;
+  --color-gw-magenta: #C026D3;
+  --color-gw-pink: #EC4899;
+  --color-gw-orange: #F97316;
+
+  /* Dark Theme Backgrounds */
+  --color-gw-dark-bg: #050711;
+  --color-gw-dark-surface: #0F1129;
+  --color-gw-dark-card: #151835;
+  --color-gw-dark-elevated: #1C1F45;
+  --color-gw-dark-border: #252952;
+
+  /* Light Theme */
+  --color-gw-light-bg: #FAFAFE;
+  --color-gw-light-surface: #FFFFFF;
+  --color-gw-light-card: #FFFFFF;
+  --color-gw-light-elevated: #F5F3FF;
+  --color-gw-light-border: #E8E5F0;
+
+  /* Text Colors */
+  --color-gw-text-primary: #FFFFFF;
+  --color-gw-text-secondary: #A5A8CC;
+  --color-gw-text-muted: #6B6F99;
+  --color-gw-text-dark: #1A1A2E;
+  --color-gw-text-dark-secondary: #64648B;
+
+  /* Semantic */
+  --color-gw-success: #22C55E;
+  --color-gw-warning: #FBBF24;
+  --color-gw-error: #EF4444;
+  --color-gw-info: #3B82F6;
+  --color-gw-coin: #FFD700;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Theme Variables via CSS Custom Properties
+   ============================================ */
+
+:root {
+  --gw-gradient: linear-gradient(135deg, #7C3AED, #C026D3, #EC4899, #F97316);
+  --gw-gradient-horizontal: linear-gradient(90deg, #7C3AED, #C026D3, #EC4899, #F97316);
+  --gw-gradient-vertical: linear-gradient(180deg, #7C3AED, #C026D3, #EC4899, #F97316);
+  --gw-gradient-subtle: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(192,38,211,0.1), rgba(236,72,153,0.08));
+  --gw-glow-purple: 0 0 20px rgba(124,58,237,0.3);
+  --gw-glow-pink: 0 0 20px rgba(236,72,153,0.3);
+}
+
+/* Dark theme (default) */
+[data-theme="dark"] {
+  --bg: #050711;
+  --surface: #0F1129;
+  --card: #151835;
+  --elevated: #1C1F45;
+  --border: #252952;
+  --text: #FFFFFF;
+  --text-secondary: #A5A8CC;
+  --text-muted: #6B6F99;
+  color-scheme: dark;
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --bg: #FAFAFE;
+  --surface: #FFFFFF;
+  --card: #FFFFFF;
+  --elevated: #F5F3FF;
+  --border: #E8E5F0;
+  --text: #1A1A2E;
+  --text-secondary: #64648B;
+  --text-muted: #9CA3AF;
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================
+   Gradient Utilities
+   ============================================ */
+
+.gw-gradient-bg {
+  background: var(--gw-gradient);
+}
+
+.gw-gradient-text {
+  background: var(--gw-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gw-gradient-border {
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.gw-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--gw-gradient);
+  z-index: -1;
+}
+
+/* ============================================
+   Story Ring Gradients
+   ============================================ */
+
+.story-ring-purple { background: linear-gradient(135deg, #7C3AED, #C026D3); }
+.story-ring-pink { background: linear-gradient(135deg, #EC4899, #F97316); }
+.story-ring-blue { background: linear-gradient(135deg, #3B82F6, #06B6D4); }
+.story-ring-orange { background: linear-gradient(135deg, #F97316, #FBBF24); }
+.story-ring-gradient { background: var(--gw-gradient); }
+
+/* ============================================
+   Scrollbar
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================
+   Mobile-First Responsive Helpers
+   ============================================ */
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   Animation Base
+   ============================================ */
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(124,58,237,0.3); }
+  50% { box-shadow: 0 0 25px rgba(192,38,211,0.5); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes coin-spin {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--card) 25%, var(--elevated) 50%, var(--card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
