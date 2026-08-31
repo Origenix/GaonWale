@@ -1,7 +1,7 @@
 [build]
   base = "Fronted/gaonwale-frontend"
-  publish = "Fronted/gaonwale-frontend/dist"
   command = "npm run build"
+  publish = "dist"
 
 [[redirects]]
   from = "/*"
