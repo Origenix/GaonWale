@@ -4,63 +4,42 @@ import { Plus } from 'lucide-react';
 import { classNames, getRingColorClass } from '../../utils/helpers';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { Link } from 'react-router-dom';
 
 export const StoryBar: React.FC = () => {
   const { theme } = useTheme();
   const { user } = useAuth();
+  const storyBorder = theme === 'dark' ? 'border-[#252952]' : 'border-gray-100';
 
   return (
-    <div className={classNames(
-      "w-full py-4 border-b overflow-hidden",
-      theme === 'dark' ? "border-[#252952]" : "border-gray-200"
-    )}>
-      <div className="flex gap-4 px-4 overflow-x-auto hide-scrollbar pb-2">
-        {/* Current User Add Story */}
-        <div className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer">
-          <div className="relative w-16 h-16 rounded-full p-[2px] bg-gray-200 dark:bg-[#252952]">
-            <div className="w-full h-full rounded-full border-2 border-white dark:border-[#050711] overflow-hidden">
-              <img 
-                src={user?.avatar || '/assets/avatars/default.png'} 
-                alt="Your Story" 
-                className="w-full h-full object-cover" 
-              />
+    <section className={classNames('w-full border-b', storyBorder)} aria-label="Stories">
+      <div className="flex gap-3.5 overflow-x-auto px-4 py-3.5 hide-scrollbar">
+        <Link to="/create?type=story" className="group flex w-[68px] shrink-0 flex-col items-center gap-1.5">
+          <div className="relative h-[68px] w-[68px] rounded-full bg-gray-200 p-[2px] dark:bg-[#252952]">
+            <div className="h-full w-full overflow-hidden rounded-full border-2 border-white bg-gray-100 dark:border-[#050711] dark:bg-[#151835]">
+              <img src={user?.avatar || '/assets/avatars/default.png'} alt="Your Story" className="h-full w-full object-cover" />
             </div>
-            <div className="absolute bottom-0 right-0 w-5 h-5 bg-[#7C3AED] rounded-full border-2 border-white dark:border-[#050711] flex items-center justify-center">
-              <Plus size={12} className="text-white" />
-            </div>
-          </div>
-          <span className={classNames(
-            "text-xs font-medium w-16 text-center truncate",
-            theme === 'dark' ? "text-gray-300" : "text-gray-700"
-          )}>
-            Your Story
-          </span>
-        </div>
-
-        {/* Stories */}
-        {mockStories.filter(s => s.id !== 's0').map((story) => (
-          <div key={story.id} className="flex flex-col items-center gap-1.5 flex-shrink-0 cursor-pointer">
-            <div className={classNames(
-              "w-16 h-16 rounded-full p-[2px]",
-              !story.viewed ? getRingColorClass(story.colorRing) : "bg-gray-300 dark:bg-[#252952]"
-            )}>
-              <div className="w-full h-full rounded-full border-2 border-white dark:border-[#050711] overflow-hidden">
-                <img 
-                  src={story.thumbnail} 
-                  alt={story.user.id.startsWith('a') ? (story.user as any).displayName : (story.user as any).fullName} 
-                  className="w-full h-full object-cover" 
-                />
-              </div>
-            </div>
-            <span className={classNames(
-              "text-xs font-medium w-16 text-center truncate",
-              theme === 'dark' ? "text-gray-300" : "text-gray-700"
-            )}>
-              {story.user.id.startsWith('a') ? (story.user as any).displayName : (story.user as any).fullName}
+            <span className="absolute bottom-0 right-0 grid h-5 w-5 place-items-center rounded-full bg-gw-purple text-white ring-2 ring-white dark:ring-[#050711]">
+              <Plus size={13} strokeWidth={3} />
             </span>
           </div>
-        ))}
+          <span className="w-full truncate text-center text-[11px] font-medium text-gray-600 dark:text-gray-300">Your Story</span>
+        </Link>
+
+        {mockStories.filter(s => s.id !== 's0').map((story) => {
+          const name = story.user.id.startsWith('a') ? (story.user as any).displayName : (story.user as any).fullName;
+          return (
+            <Link to={`/story/${story.id}`} key={story.id} className="flex w-[68px] shrink-0 flex-col items-center gap-1.5">
+              <div className={classNames('h-[68px] w-[68px] rounded-full p-[2.5px]', !story.viewed ? getRingColorClass(story.colorRing) : 'bg-gray-300 dark:bg-[#252952]')}>
+                <div className="h-full w-full overflow-hidden rounded-full border-2 border-white bg-gray-100 dark:border-[#050711] dark:bg-[#151835]">
+                  <img src={story.thumbnail} alt={name} className="h-full w-full object-cover" />
+                </div>
+              </div>
+              <span className="w-full truncate text-center text-[11px] font-medium text-gray-600 dark:text-gray-300">{name}</span>
+            </Link>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 };
