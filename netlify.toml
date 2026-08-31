@@ -1,0 +1,9 @@
+[build]
+  base = "Fronted/gaonwale-frontend"
+  publish = "Fronted/gaonwale-frontend/dist"
+  command = "npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
