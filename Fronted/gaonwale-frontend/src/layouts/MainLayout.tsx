@@ -12,34 +12,20 @@ export const MainLayout: React.FC = () => {
   const { theme } = useTheme();
 
   if (isLoading) {
-    return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
+    return <div className="grid min-h-dvh place-items-center bg-[var(--bg)] text-[var(--text)]">Loading...</div>;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
-    <div
-      className={classNames(
-        "min-h-screen",
-        theme === "dark" ? "bg-[#050711]" : "bg-[#FAFAFE]",
-      )}
-    >
-      <TopHeader onMenuClick={() => {}} />
-
-      <div className="flex max-w-[1920px] mx-auto">
+    <div className={classNames('min-h-dvh', theme === 'dark' ? 'bg-[#050711]' : 'bg-[#FAFAFE'])}>
+      <TopHeader />
+      <div className="mx-auto flex max-w-[1440px]">
         <DesktopSidebar />
-
-        <main className="flex-1 w-full pb-20 md:pb-0 overflow-x-hidden min-h-[calc(100vh-60px)]">
+        <main className="min-h-[calc(100dvh-56px)] min-w-0 flex-1 overflow-x-hidden pb-20 md:pb-0">
           <Outlet />
         </main>
       </div>
-
       <BottomNavigation />
     </div>
   );
