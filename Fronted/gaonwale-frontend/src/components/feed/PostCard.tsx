@@ -1,124 +1,67 @@
 import React, { useState } from 'react';
-import { MoreVertical, MessageCircle, Share2, Bookmark, Heart } from 'lucide-react';
+import { MoreHorizontal, MessageCircle, Send, Bookmark, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { Post } from '../../types';
 import { useTheme } from '../../context/ThemeContext';
 import { classNames, formatNumber } from '../../utils/helpers';
 
-interface PostCardProps {
-  post: Post;
-  rank?: number;
-}
+interface PostCardProps { post: Post; rank?: number; }
 
 export const PostCard: React.FC<PostCardProps> = ({ post, rank }) => {
   const { theme } = useTheme();
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [isSaved, setIsSaved] = useState(post.isSaved);
   const [likesCount, setLikesCount] = useState(post.likes);
-
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
-  };
-
   const authorName = post.author.id.startsWith('a') ? (post.author as any).displayName : (post.author as any).fullName;
 
+  const handleLike = () => {
+    setIsLiked(current => {
+      setLikesCount(count => current ? Math.max(0, count - 1) : count + 1);
+      return !current;
+    });
+  };
+
   return (
-    <div className={classNames(
-      "mb-2 md:mb-4 md:rounded-2xl border-y md:border shadow-sm",
-      theme === 'dark' ? "bg-[#151835] border-[#252952]" : "bg-white border-gray-200"
-    )}>
-      {/* Header */}
-      <div className="p-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {rank && (
-            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
-              {rank}
-            </div>
-          )}
-          <img 
-            src={post.author.avatar} 
-            alt={authorName} 
-            className={classNames(
-              "w-10 h-10 rounded-full object-cover",
-              post.author.id.startsWith('a') ? "border-2 border-[#7C3AED]" : ""
-            )} 
-          />
-          <div>
-            <h3 className={classNames("font-bold text-sm", theme === 'dark' ? "text-white" : "text-gray-900")}>
-              {authorName}
-            </h3>
-            <p className="text-xs text-gray-500">
-              {post.village} • {post.createdAt}
-            </p>
+    <article className={classNames('mb-2 md:mb-4 md:rounded-2xl border-y md:border shadow-sm overflow-hidden', theme === 'dark' ? 'bg-[#151835] border-[#252952]' : 'bg-white border-gray-200')}>
+      <div className="flex items-center justify-between px-4 py-3.5">
+        <Link to={`/profile/${post.author.id}`} className="flex min-w-0 items-center gap-3">
+          {rank && <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 text-xs font-bold text-white">{rank}</span>}
+          <img src={post.author.avatar} alt={authorName} className={classNames('h-10 w-10 shrink-0 rounded-full object-cover', post.author.id.startsWith('a') ? 'ring-2 ring-gw-purple ring-offset-2 dark:ring-offset-[#151835]' : '')} />
+          <div className="min-w-0">
+            <h3 className={classNames('truncate text-sm font-bold', theme === 'dark' ? 'text-white' : 'text-gray-900')}>{authorName}</h3>
+            <p className="truncate text-xs text-gray-500">{post.village} · {post.createdAt}</p>
           </div>
-        </div>
-        <button className="text-gray-400 hover:text-gray-600">
-          <MoreVertical size={20} />
+        </Link>
+        <button aria-label="More options" className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-[#1C1F45]">
+          <MoreHorizontal size={21} />
         </button>
       </div>
 
-      {/* Content */}
-      <div className="px-4 pb-3">
-        <p className={classNames("text-sm whitespace-pre-line leading-relaxed", theme === 'dark' ? "text-gray-200" : "text-gray-800")}>
-          {post.content}
-        </p>
-      </div>
+      {post.content && <div className="px-4 pb-3"><p className={classNames('whitespace-pre-line text-[14px] leading-5', theme === 'dark' ? 'text-gray-100' : 'text-gray-800')}>{post.content}</p></div>}
 
-      {/* Media */}
       {post.images && post.images.length > 0 && (
-        <div className={classNames(
-          "w-full overflow-hidden",
-          post.images.length === 1 ? "max-h-[400px]" : "grid grid-cols-2 gap-1"
-        )}>
+        <div className={classNames('w-full overflow-hidden bg-black', post.images.length > 1 ? 'grid grid-cols-2 gap-px' : '')}>
           {post.images.map((img, i) => (
-            <img 
-              key={i} 
-              src={img} 
-              alt="Post attachment" 
-              className={classNames(
-                "w-full object-cover",
-                post.images.length === 1 ? "h-auto max-h-[400px]" : "h-48"
-              )} 
-            />
+            <img key={i} src={img} alt="Post attachment" loading="lazy" className={classNames('w-full object-cover', post.images.length === 1 ? 'max-h-[620px] min-h-[260px]' : 'aspect-square')} />
           ))}
         </div>
       )}
 
-      {/* Actions */}
-      <div className="px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <button 
-            onClick={handleLike}
-            className={classNames(
-              "flex items-center gap-1.5 text-sm font-medium transition-colors",
-              isLiked ? "text-red-500" : "text-gray-500 hover:text-red-500"
-            )}
-          >
-            <Heart size={20} className={isLiked ? "fill-current text-red-500" : ""} />
-            <span>{formatNumber(likesCount)}</span>
-          </button>
-          
-          <button className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-            <MessageCircle size={20} />
-            <span>{formatNumber(post.comments)}</span>
-          </button>
-          
-          <button className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-            <Share2 size={20} />
-            <span>{formatNumber(post.shares)}</span>
+      <div className="px-4 pt-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <button aria-label={isLiked ? 'Unlike post' : 'Like post'} onClick={handleLike} className={classNames('rounded-full p-2 transition active:scale-90', isLiked ? 'text-red-500' : 'text-gray-600 dark:text-gray-300')}>
+              <Heart size={25} fill={isLiked ? 'currentColor' : 'none'} strokeWidth={isLiked ? 2.2 : 1.8} />
+            </button>
+            <Link aria-label="View comments" to={`/post/${post.id}`} className="rounded-full p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-[#1C1F45]"><MessageCircle size={24} strokeWidth={1.9} /></Link>
+            <button aria-label="Share post" className="rounded-full p-2 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-[#1C1F45]"><Send size={24} strokeWidth={1.9} /></button>
+          </div>
+          <button aria-label={isSaved ? 'Remove from saved' : 'Save post'} onClick={() => setIsSaved(value => !value)} className={classNames('rounded-full p-2 transition active:scale-90', isSaved ? 'text-gw-purple' : 'text-gray-600 dark:text-gray-300')}>
+            <Bookmark size={24} fill={isSaved ? 'currentColor' : 'none'} strokeWidth={1.9} />
           </button>
         </div>
-        
-        <button 
-          onClick={() => setIsSaved(!isSaved)}
-          className={classNames(
-            "text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors",
-            isSaved ? "text-[#7C3AED]" : ""
-          )}
-        >
-          <Bookmark size={22} className={isSaved ? "fill-current text-[#7C3AED]" : ""} />
-        </button>
+        <p className="pb-3 text-xs font-semibold text-gray-500 dark:text-gray-400">{formatNumber(likesCount)} likes · {formatNumber(post.comments)} comments</p>
       </div>
-    </div>
+    </article>
   );
 };
