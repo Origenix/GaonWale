@@ -6,162 +6,54 @@ import { useAuth } from '../context/AuthContext';
 export const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
     try {
       await login();
       navigate('/home');
-    } catch (err) {
-      console.error(err);
+    } catch {
+      setError('Unable to create your account. Please try again.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col relative overflow-hidden">
-      
-      {/* Decorative gradient blob */}
-      <div className="absolute top-[-20%] left-[-10%] w-[140%] h-[50vh] rounded-full bg-gradient-to-b from-[#F97316]/20 via-[#EC4899]/10 to-transparent blur-3xl pointer-events-none"></div>
+    <main className="min-h-screen overflow-x-hidden bg-[#faf9ff] text-gray-900">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#6d28d9] via-[#c026d3] to-[#f97316] px-5 pb-20 pt-[max(1.5rem,env(safe-area-inset-top))]">
+        <div className="pointer-events-none absolute -left-20 top-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-orange-300/20 blur-3xl" />
+        <button type="button" aria-label="Back to login" onClick={() => navigate('/login')} className="relative z-10 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md active:scale-95"><ArrowLeft size={23} /></button>
+        <div className="relative z-10 mx-auto mt-5 w-fit"><img src="/assets/logo/gaonwale-logo.png" alt="GaonWale logo" className="h-20 w-20 rounded-[24px] border-2 border-white/30 object-cover shadow-2xl" /></div>
+        <div className="relative z-10 mt-3 text-center text-white"><h1 className="text-2xl font-extrabold">GaonWale</h1><p className="mt-1 text-sm text-white/90">Apne Gaon Ki Baat, Apne Andaaz Mein</p></div>
+      </section>
 
-      <div className="px-6 pt-12 pb-6 relative z-10">
-        <button onClick={() => navigate('/login')} className="mb-6 flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-700 hover:bg-gray-100 transition-colors">
-          <ArrowLeft size={24} />
-        </button>
-
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-          <p className="text-sm text-gray-500 mt-2">Sign up to start your journey</p>
+      <section className="relative z-20 -mt-10 min-h-[72dvh] rounded-t-[34px] bg-white px-5 pb-[max(2rem,env(safe-area-inset-bottom))] pt-8 shadow-[0_-18px_45px_rgba(76,29,149,.12)] sm:mx-auto sm:max-w-md">
+        <div className="mx-auto max-w-sm">
+          <div className="mb-6 text-center"><h2 className="text-[27px] font-extrabold tracking-tight">Create your account</h2><p className="mt-1 text-sm text-gray-500">Sign up to start your journey</p></div>
+          <form onSubmit={handleRegister} className="space-y-3.5">
+            {error && <div role="alert" className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-600">{error}</div>}
+            <label className="relative block"><User size={19} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" /><input aria-label="Full Name" required placeholder="Full Name" className="h-14 w-full rounded-2xl border border-gray-200 bg-[#fafaff] pl-12 pr-4 text-[15px] font-medium outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-purple-100" /></label>
+            <label className="relative block"><AtSign size={19} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" /><input aria-label="Username" required placeholder="Username" autoComplete="username" className="h-14 w-full rounded-2xl border border-gray-200 bg-[#fafaff] pl-12 pr-4 text-[15px] font-medium outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-purple-100" /></label>
+            <label className="relative block"><Smartphone size={19} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" /><input aria-label="Mobile Number" required type="tel" inputMode="tel" placeholder="Mobile Number" className="h-14 w-full rounded-2xl border border-gray-200 bg-[#fafaff] pl-12 pr-4 text-[15px] font-medium outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-purple-100" /></label>
+            <label className="relative block"><Lock size={19} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" /><input aria-label="Password" required minLength={6} type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" autoComplete="new-password" className="h-14 w-full rounded-2xl border border-gray-200 bg-[#fafaff] pl-12 pr-12 text-[15px] font-medium outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-purple-100" /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-gray-400 active:scale-90">{showPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button></label>
+            <label className="relative block"><Lock size={19} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" /><input aria-label="Confirm Password" required minLength={6} type={showConfirmPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" autoComplete="new-password" className="h-14 w-full rounded-2xl border border-gray-200 bg-[#fafaff] pl-12 pr-12 text-[15px] font-medium outline-none focus:border-[#7c3aed] focus:ring-4 focus:ring-purple-100" /><button type="button" aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'} onClick={() => setShowConfirmPassword((value) => !value)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl p-2 text-gray-400 active:scale-90">{showConfirmPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button></label>
+            <button type="submit" disabled={isLoading} className="h-14 w-full rounded-2xl bg-gradient-to-r from-[#2563eb] to-[#3b82f6] text-base font-bold text-white shadow-lg shadow-blue-500/25 transition active:scale-[.98] disabled:opacity-60">{isLoading ? 'Creating account…' : 'Sign Up'}</button>
+          </form>
+          <div className="my-7 flex items-center gap-4"><span className="h-px flex-1 bg-gray-200" /><span className="text-xs font-semibold text-gray-400">OR</span><span className="h-px flex-1 bg-gray-200" /></div>
+          <div className="space-y-3"><button type="button" className="h-13 min-h-13 w-full rounded-2xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 shadow-sm">🌈&nbsp; Continue with Google</button><button type="button" className="h-13 min-h-13 w-full rounded-2xl border border-gray-200 bg-white text-sm font-semibold text-gray-700 shadow-sm">🔵&nbsp; Continue with Facebook</button></div>
+          <p className="mt-7 pb-2 text-center text-sm text-gray-500">Already have an account? <Link to="/login" className="font-bold text-blue-600">Login</Link></p>
         </div>
-
-        <form onSubmit={handleRegister} className="space-y-4 max-w-md w-full mx-auto">
-          
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <User size={20} className="text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Full Name"
-              required
-              className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 font-medium shadow-sm"
-            />
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <AtSign size={20} className="text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Username"
-              required
-              className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 font-medium shadow-sm"
-            />
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Smartphone size={20} className="text-gray-400" />
-            </div>
-            <input
-              type="tel"
-              placeholder="Mobile Number"
-              required
-              className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 font-medium shadow-sm"
-            />
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock size={20} className="text-gray-400" />
-            </div>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              required
-              className="w-full pl-11 pr-12 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 font-medium shadow-sm"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock size={20} className="text-gray-400" />
-            </div>
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Confirm Password"
-              required
-              className="w-full pl-11 pr-12 py-3.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 font-medium shadow-sm"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
-            >
-              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3.5 mt-4 bg-[#3B82F6] hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center"
-          >
-             {isLoading ? (
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : 'Sign Up'}
-          </button>
-        </form>
-
-        <div className="mt-8 flex items-center justify-center max-w-md w-full mx-auto">
-          <div className="flex-1 h-px bg-gray-200"></div>
-          <span className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">OR</span>
-          <div className="flex-1 h-px bg-gray-200"></div>
-        </div>
-
-        <div className="mt-6 space-y-3 max-w-md w-full mx-auto">
-          <button className="w-full py-3 flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700 shadow-sm">
-            <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-              <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-              </g>
-            </svg>
-            Continue with Google
-          </button>
-          
-          <button className="w-full py-3 flex items-center justify-center gap-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors font-semibold text-gray-700 shadow-sm">
-            <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
-              <path d="M16.671 15.542l.532-3.469h-3.328v-2.25c0-.949.465-1.874 1.956-1.874h1.514V5.006s-1.375-.235-2.686-.235c-2.741 0-4.533 1.662-4.533 4.669v2.633H7.078v3.469h3.047v8.385a12.09 12.09 0 003.75 0v-8.385h2.796" fill="#ffffff"/>
-            </svg>
-            Continue with Facebook
-          </button>
-        </div>
-
-        <div className="mt-8 text-center max-w-md w-full mx-auto">
-          <p className="text-gray-500 text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="font-bold text-[#3B82F6] hover:text-blue-700">
-              Login
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
